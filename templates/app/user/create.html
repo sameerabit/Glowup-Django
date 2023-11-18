@@ -1,0 +1,61 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="tile">
+            <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for field in form %}
+                        {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="custom-control custom-checkbox">
+                            {{ field }}
+                            <label class="custom-control-label" class="custom-control-label" for="{{ field.id_for_label }}">{{
+                                field.label }}</label>
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tile-footer">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2-bootstrap.min.css' %}">
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/plugins/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/select2-custom.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Assigned Employees</h3>
+                <p><a class="btn btn-primary icon-btn" href="{% url 'asign_employee' %}"><i class="fa fa-plus"></i>Asign
+                        Employee </a></p>
+            </div>
+            <div class="tile-body">
+                <table class="table" id="employee-duties-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Employee</th>
+                            <th>Status</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alloc in list %}
+                        <tr>
+                            <td>{{ alloc.service_category }}</td>
+                            <td>{{ alloc.employee }}</td>
+                            <td>{{ alloc.is_active }}</td>
+                            <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'deallocate_employee' id=alloc.employee_services_id %}">edit</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#employee-duties-table').DataTable({responsive: true});
+</script>
+{% endblock %}

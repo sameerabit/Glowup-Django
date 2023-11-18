@@ -1,0 +1,82 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Pending Bookings</h3>
+            </div>
+            <div class="tile-body">
+                <table class="table" id="booking-table">
+                    <thead>
+                        <tr>
+                            <th>Token No</th>
+                            <th>Client</th>
+                            <th>Comment</th>
+                            <th>Prefered Employee</th>
+                            <th>Start Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.token }}</td>
+                            <td>{{ booking.client|default_if_none:booking.client_name }}</td>
+                            <td>{{ booking.client_remark }}</td>
+                            <td>{{ booking.prefered_employee }}</td>
+                            <td>{{ booking.schedule_time }}</td>
+                            {% if booking.get_status == 'start' %}
+                            <td>
+                                <a class="btn btn-sm btn-outline-secondary action-btn" data-href="{% url 'create_client_session' booking_id=booking.booking_id %}">{{ booking.get_status|capfirst }}</a>
+                            </td>
+                            {% else %}
+                            <td>
+                                <a class="btn btn-sm btn-outline-secondary action-btn" data-href="{% url 'show_booking_comment' booking_id=booking.booking_id %}">{{ booking.get_status|capfirst }}</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#booking-table').DataTable({responsive: true});
+
+    $('.action-btn').click(function (evt) {
+        window.open($(this).data('href'), "_blank", "menubar=no,toolbar=no,scrollbars=yes,resizable=no,top=0,left=0,width=800,height=500");
+    });
+
+    function handlePopupResult(result) {
+        $.notify({
+            message: "Processing..."
+        }, {
+            onClose: function () {
+                location.reload();
+            },
+            delay: 50
+        });
+    }
+</script>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    th,
+    td {
+        white-space: nowrap;
+    }
+</style>
+{% endblock%}

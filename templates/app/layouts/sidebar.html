@@ -1,0 +1,81 @@
+<div class="app-sidebar__overlay" data-toggle="sidebar">
+</div>
+<aside class="app-sidebar">
+    <div class="app-sidebar__user">
+        <img width="60px" class="app-sidebar__user-avatar" src="https://thumbs.dreamstime.com/z/cheerful-indian-girl-standing-home-office-looking-camera-cheerful-beautiful-indian-girl-student-professional-standing-168424419.jpg" />
+        <div>
+            <p class="app-sidebar__user-name">{{ user.first_name|capfirst }}</p>
+            <p class="app-sidebar__user-designation"></p>
+        </div>
+    </div>
+    <ul class="app-menu">
+        <li>
+            <a class="app-menu__item" href="{% url 'dashboard' %}">
+                <i class="app-menu__icon fa fa-tachometer-alt"></i>
+                <span class="app-menu__label">Dashboard</span>
+            </a>
+        </li>
+        
+        {% if perms.app.view_employees or perms.app.view_clients or perms.app.view_service_categories or perms.app.view_services or perms.auth.view_user %}
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-cogs"></i><span
+                    class="app-menu__label">Master Files</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+            <ul class="treeview-menu">
+                {% if perms.app.add_employee or perms.app.view_employees %}
+                <li>
+                    <a class="treeview-item" href="{% url 'view_employees' %}">
+                        <i class="icon fa fa-user"></i>Employees</a>
+                </li>
+                {% endif %}
+                {% if perms.app.add_client or perms.app.view_clients %}
+                <li>
+                    <a class="treeview-item" href="{% url 'view_clients' %}">
+                        <i class="icon fa fa-user-tie"></i>Client</a>
+                </li>
+                {% endif %}
+                {% if perms.app.view_service_categories or perms.app.add_service_category %}
+                <li>
+                    <a class="treeview-item" href="{% url 'view_service_categories' %}">
+                        <i class="icon fa fa-cogs"></i>Service Category</a>
+                </li>
+                {% endif %}
+                {% if perms.app.view_services or perms.app.add_service %}
+                <li>
+                    <a class="treeview-item" href="{% url 'service_list' %}">
+                        <i class="icon fa fa-user-tie"></i>Services</a>
+                </li>
+                {% endif %}
+                {% if perms.auth.add_user or perms.auth.view_user %}
+                <li>
+                    <a class="treeview-item" href="{% url 'view_users' %}">
+                        <i class="icon fa fa-users"></i>Users</a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% endif %}
+        {% if perms.app.add_future_booking or perms.app.view_future_bookings %}
+        <li>
+            <a class="app-menu__item" href="{% url 'view_bookings' %}">
+                <i class="app-menu__icon fa fa-clipboard-list"></i>
+                <span class="app-menu__label">Future Bookings</span>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.app.add_booking or perms.app.view_bookings %}
+        <li>
+            <a class="app-menu__item" href="{% url 'create_client_booking' %}">
+                <i class="app-menu__icon fa fa-clipboard-list"></i>
+                <span class="app-menu__label">Client Booking</span>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.app.view_bookings %}
+        <li>
+            <a class="app-menu__item" href="{% url 'view_pending_bookings' %}">
+                <i class="app-menu__icon fa fa-clipboard-list"></i>
+                <span class="app-menu__label">Pending Client Bookings</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</aside>

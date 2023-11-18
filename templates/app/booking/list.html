@@ -1,0 +1,84 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Bookings</h3>
+                {% if perms.app.add_booking %}
+                <p><a class="btn btn-primary icon-btn" href="{% url 'create_booking' %}"><i class="fa fa-plus"></i>Make
+                        an Appoinment</a></p>
+                {% endif %}
+            </div>
+            <div class="tile-body">
+                <table class="table" id="booking-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Schedule Date</th>
+                            <th>Schedule Time</th>
+                            <th>Phone No</th>
+                            <th>Comment</th>
+                            <th>Prefered Employee</th>
+                            <th>Current State</th>
+                            <th>Schedule Remark</th>
+                            <th>Schedule Employee</th>
+                            <th>Schedule Start</th>
+                            <th>Schedule End</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.client|default_if_none:booking.client_name }}</td>
+                            <td>{{ booking.schedule_date }}</td>
+                            <td>{{ booking.schedule_time }}</td>
+                            <td>{{ booking.phone_no }}</td>
+                            <td>{{ booking.client_remark }}</td>
+                            <td>{{ booking.prefered_employee }}</td>
+                            <td>{{ booking.status }}</td>
+                            <td>{{ booking.schedule_remark }}</td>
+                            <td>{{ booking.schedule_employee }}</td>
+                            <td>{{ booking.schedule_start_datetime }}</td>
+                            <td>{{ booking.schedule_end_datetime }}</td>
+                            <td>{{ booking.location }}</td>
+                            <td>{{ booking.is_active }}</td>
+                            <td><a class="btn btn-sm btn-outline-secondary"
+                                    href="{% url 'update_booking' booking_id=booking.booking_id %}">edit</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#booking-table').DataTable({
+        responsive: true,
+        scrollX: true,
+        pagingType: "full_numbers"
+    });
+</script>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    th,
+    td {
+        white-space: nowrap;
+    }
+</style>
+{% endblock%}

@@ -1,0 +1,67 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Customer Locations</h3>
+                {% if perms.app.add_customerlocation %}
+                <p><a class="btn btn-primary icon-btn" href="{% url 'create_customer_location' %}"><i class="fa fa-plus"></i>Add Customer Location</a></p>
+                {% endif %}
+            </div>
+            <div class="tile-body">
+                <table class="table" id="customer-location-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Location</th>
+                            <th>Address 1</th>
+                            <th>Address 2</th>
+                            <th>City</th>
+                            <th>Mobile</th>
+                            <th>Land</th>
+                            <th>Status</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer_location in customer_locations %}
+                        <tr>
+                            <td>{{ customer_location.customer }}</td>
+                            <td>{{ customer_location.location_name }}</td>
+                            <td>{{ customer_location.address_1 }}</td>
+                            <td>{{ customer_location.address_2 }}</td>
+                            <td>{{ customer_location.city }}</td>
+                            <td>{{ customer_location.contact_mobile }}</td>
+                            <td>{{ customer_location.contact_land }}</td>
+                            <td>{{ customer_location.is_active }}</td>
+                            <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'update_customer_location' location_id=customer_location.location_id %}">edit</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#customer-location-table').DataTable({responsive: true});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    th, td {
+        white-space: nowrap;
+    }
+</style>
+{% endblock%}

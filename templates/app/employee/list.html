@@ -1,0 +1,59 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Employees</h3>
+                {% if perms.app.add_employee %}
+                <p><a class="btn btn-primary icon-btn" href="{% url 'create_employee' %}"><i class="fa fa-plus"></i>Add Employee </a></p>
+                {% endif %}
+            </div>
+            <div class="tile-body">
+                <table class="table" id="employee-table">
+                    <thead>
+                        <tr>
+                            <th>Employee No</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Status</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.employee_code }}</td>
+                            <td>{{ employee.first_name }}</td>
+                            <td>{{ employee.last_name }}</td>
+                            <td>{{ employee.is_active }}</td>
+                            <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'update_employee' employee_id=employee.employee_id %}">edit</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#employee-table').DataTable({responsive: true});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    th, td {
+        white-space: nowrap;
+    }
+</style>
+{% endblock%}

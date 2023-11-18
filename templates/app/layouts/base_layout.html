@@ -1,0 +1,32 @@
+{% extends 'layouts/fullscreen_layout.html' %}
+
+{% block fullscreen %}
+
+<body class="app sidebar-mini rtl">
+    <!-- Navbar-->
+    {% include "./nav_bar.html" %}
+    <!-- Sidebar menu-->
+    {% include "./sidebar.html" %}
+    <!-- Document Content-->
+
+    {% if messages %}
+    {% for message in messages %}
+    <input data-level="{{ message.level }}" type="hidden" class="meta-messages" value="{{ message }}">
+    {% endfor %}
+    {% endif %}
+
+    <main class="app-content">
+        <div class="app-title">
+            <div>
+                <h1><i class="fa {{ iconClass }}"></i> {{title}}</h1>
+                <p>{{subTitle}}</p>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+
+{% endblock %}

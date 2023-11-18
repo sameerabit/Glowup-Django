@@ -1,0 +1,94 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="tile">
+            <form action="{% url 'create_client_booking' %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    {% for field in form %}
+                    <div class="col-md-6">
+                        {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="custom-control custom-checkbox">
+                            {{ field }}
+                            <label class="custom-control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="tile-footer">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="tile">
+            <div class="tile-body">
+                <table class="table" id="booking-table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Client</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.token }}</td>
+                            <td>{{ booking.client|default_if_none:booking.client_name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2-bootstrap.min.css' %}">
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/plugins/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/select2-custom.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('select[name="client"]').change(function (e) {
+            var $this = $(this);
+            var selected_client = $('option:selected', $this);
+            var client_name = selected_client.attr('name');
+            var client_phone_no = selected_client.attr('phone_no');
+            $('input[name="client_name"]').val(client_name);
+            $('input[name="phone_no"]').val(client_phone_no);
+        });
+    });
+</script>
+{% endblock %}

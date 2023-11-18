@@ -1,0 +1,161 @@
+{% extends 'layouts/popup_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="row">
+                {% for field in booking_form %}
+                <div class="col-sm-6">
+                    {% if field.field.widget.input_type == "checkbox" %}
+                    <div class="custom-control custom-checkbox">
+                        {{ field }}
+                        <label class="custom-control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                        <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="form-group">
+                        {% if field.field.widget.input_type != "hidden" %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% endif %}
+                        {{ field }}
+
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                        <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <form action="{% url 'create_client_session' booking_id=form.instance.booking_id %}" method="POST" novalidate>
+                {% csrf_token %}
+                <div class="row">
+                    {% for field in form %}
+                    <div class="col-sm-6">
+                        {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="custom-control custom-checkbox">
+                            {{ field }}
+                            <label class="custom-control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            {% if field.field.widget.input_type != "hidden" %}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% endif %}
+                            {{ field }}
+
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <small class="form-text text-danger">{{ field.errors|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="tile-footer">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="history-area" style="display: none;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <table class="table" id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Client Remark</th>
+                                <th>Schedule Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% load static %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/plugins/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/select2-custom.js' %}"></script>
+<script type="text/javascript">
+    $(window).on("beforeunload", function () {
+        window.opener.handlePopupResult('data from popup window');
+    });
+    $(document).ready(function () {
+        var client_id = '{{ form.instance.booking.client_id }}';
+        $.ajax({
+            url: '{% url "get_client_bookings" %}',
+            data: {
+                client_id: client_id
+            },
+            beforeSend: function (xhr) {
+                if (client_id == 'None') {
+                    xhr.abort();
+                }
+            },
+            dataType: 'json',
+            success: function (data) {
+                var bookings = JSON.parse(data),
+                    length = bookings.length,
+                    $history_table = $('#history-table'),
+                    $table_body = $('tbody', $history_table);
+                $table_body.children().remove();
+                $.each(bookings, function (i, e) {
+                    var $row = $('<tr/>'),
+                        obj = e.fields;
+                    $('<td>/').html(obj.schedule_date).appendTo($row);
+                    $('<td>/').html(obj.client_remark).appendTo($row);
+                    $('<td>/').html(obj.schedule_remark).appendTo($row);
+                    $row.appendTo($table_body);
+                });
+                $('#history-area').css('display', (length > 0) ? 'block' : 'none');
+            }
+        });
+    });
+</script>
+{% endblock%}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2-bootstrap.min.css' %}">
+{% endblock %}

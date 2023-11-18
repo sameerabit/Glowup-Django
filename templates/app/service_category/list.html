@@ -1,0 +1,61 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">List of Service Categories</h3>
+                {% if perms.app.add_service_category %}
+                <p><a class="btn btn-primary icon-btn" href="{% url 'create_service_category' %}"><i class="fa fa-plus"></i>Add Service Category </a></p>
+                {% endif %}
+            </div>
+            <div class="tile-body">
+                <table class="table" id="service-category-table">
+                    <thead>
+                        <tr>
+                            <th>Service Category</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            {% if perms.app.change_service_category %}
+                            <th>Update</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service_category in service_categories %}
+                        <tr>
+                            <td>{{ service_category.service_category_name }}</td>
+                            <td>{{ service_category.customer }}</td>
+                            <td>{{ service_category.is_active }}</td>
+                            {% if perms.app.change_service_category %}
+                            <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'update_service_category' service_category_id=service_category.service_category_id %}">edit</a></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#service-category-table').DataTable({responsive: true});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    th, td {
+        white-space: nowrap;
+    }
+</style>
+{% endblock%}
